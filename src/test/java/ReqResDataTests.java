@@ -3,6 +3,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static spec.RegisterSpec.*;
 
@@ -11,17 +12,17 @@ public class ReqResDataTests extends TestBase {
     @Test
     @DisplayName("Verify that total value after get request equals 12")
     void verifyTotalTest() {
-        UsersSummaryDTO response = new UsersSummaryDTO();
-        response = given()
+        UsersSummaryDTO response = step("request get for all users", () -> given()
                 .spec(loginRequestSpec)
                 .when()
                 .get("users")
                 .then()
                 .spec(responseSpec200)
                 .extract()
-                .as(UsersSummaryDTO.class);
+                .as(UsersSummaryDTO.class));
 
-        Assertions.assertEquals(12, response.getTotal());
+        step("Verify that field TOTAL is 12", () ->
+                Assertions.assertEquals(12, response.getTotal()));
     }
 
     @Test
@@ -31,7 +32,7 @@ public class ReqResDataTests extends TestBase {
         user.setName("Max");
         user.setJob("programmer");
 
-        PostUserDTO responseUser = given()
+        PostUserDTO responseUser = step("send request to create a new user", () -> given()
                 .spec(loginRequestSpec)
                 .body(user)
                 .when()
@@ -39,10 +40,12 @@ public class ReqResDataTests extends TestBase {
                 .then()
                 .spec(responseSpec201)
                 .extract()
-                .as(PostUserDTO.class);
+                .as(PostUserDTO.class));
 
-        Assertions.assertEquals(user.getName(), responseUser.getName());
-        Assertions.assertEquals(user.getJob(), responseUser.getJob());
+        step("Verify created name for user", () ->
+                Assertions.assertEquals(user.getName(), responseUser.getName()));
+        step("Verify created job for user", () ->
+                Assertions.assertEquals(user.getJob(), responseUser.getJob()));
     }
 
     @Test
@@ -51,7 +54,7 @@ public class ReqResDataTests extends TestBase {
         LoginDTO loginUser = new LoginDTO();
         loginUser.setEmail("peter@klaven");
 
-        ErrorDTO response = given()
+        ErrorDTO response = step("Try to login without password", () -> given()
                 .spec(loginRequestSpec)
                 .body(loginUser)
                 .when()
@@ -59,8 +62,9 @@ public class ReqResDataTests extends TestBase {
                 .then()
                 .spec(responseSpec400)
                 .extract()
-                .as(ErrorDTO.class);
-        Assertions.assertEquals("Missing password", response.getError());
+                .as(ErrorDTO.class));
+        step("Verify error text", () ->
+                Assertions.assertEquals("Missing password", response.getError()));
     }
 
     @Test
@@ -70,7 +74,7 @@ public class ReqResDataTests extends TestBase {
         loginUser.setEmail("eve.holt@reqres.in");
         loginUser.setPassword("cityslicka");
 
-        TokenDTO tokenDTO = given()
+        TokenDTO tokenDTO = step("Try to login with credentials", () -> given()
                 .spec(loginRequestSpec)
                 .body(loginUser)
                 .when()
@@ -78,20 +82,21 @@ public class ReqResDataTests extends TestBase {
                 .then()
                 .spec(responseSpec200)
                 .extract()
-                .as(TokenDTO.class);
+                .as(TokenDTO.class));
 
-        Assertions.assertEquals("QpwL5tke4Pnpja7X4", tokenDTO.getToken());
+        step("Verify token is correct", () ->
+                Assertions.assertEquals("QpwL5tke4Pnpja7X4", tokenDTO.getToken()));
     }
 
     @Test
     @DisplayName("Verification status code for user, which doesn't exist")
     void verifyStatusCodeForNonExistedUserTest() {
-        given()
+        step("Verification status code for user, which doesn't exist", () -> given()
                 .spec(loginRequestSpec)
                 .when()
                 .get("user/23")
                 .then()
-                .spec(responseSpec404);
+                .spec(responseSpec404));
     }
 
     @Test
@@ -102,7 +107,7 @@ public class ReqResDataTests extends TestBase {
         user.setJob("programmer");
         user.setId(2);
 
-        PostUserDTO responseUserPost = given()
+        step("Create user with name, job and id", () -> given()
                 .spec(loginRequestSpec)
                 .body(user)
                 .when()
@@ -110,24 +115,27 @@ public class ReqResDataTests extends TestBase {
                 .then()
                 .spec(responseSpec201)
                 .extract()
-                .as(PostUserDTO.class);
+                .as(PostUserDTO.class));
 
         PostUserDTO userPut = new PostUserDTO();
         userPut.setName("Egor");
         userPut.setJob("tester");
 
-        PostUserDTO responseUserPut = given()
-                .spec(loginRequestSpec)
-                .body(userPut)
-                .when()
-                .put("users/2")
-                .then()
-                .spec(responseSpec200)
-                .extract()
-                .as(PostUserDTO.class);
+        PostUserDTO responseUserPut = step("Send new name, job for same id", () ->
+                given()
+                        .spec(loginRequestSpec)
+                        .body(userPut)
+                        .when()
+                        .put("users/2")
+                        .then()
+                        .spec(responseSpec200)
+                        .extract()
+                        .as(PostUserDTO.class));
 
-        Assertions.assertEquals(userPut.getName(), responseUserPut.getName());
-        Assertions.assertEquals(userPut.getJob(), responseUserPut.getJob());
+        step("Verify that name is changed", () ->
+                Assertions.assertEquals(userPut.getName(), responseUserPut.getName()));
+        step("Verify that job is changed", () ->
+                Assertions.assertEquals(userPut.getJob(), responseUserPut.getJob()));
 
     }
 
@@ -140,7 +148,7 @@ public class ReqResDataTests extends TestBase {
         user.setJob("programmer");
         user.setId(2);
 
-        PostUserDTO responseUserPost = given()
+        step("Create user with name, job and id", () -> given()
                 .spec(loginRequestSpec)
                 .body(user)
                 .when()
@@ -148,12 +156,12 @@ public class ReqResDataTests extends TestBase {
                 .then()
                 .spec(responseSpec201)
                 .extract()
-                .as(PostUserDTO.class);
+                .as(PostUserDTO.class));
 
         PostUserDTO userPatch = new PostUserDTO();
         userPatch.setJob("tester");
 
-        PostUserDTO responseUser = given()
+        PostUserDTO responseUser = step("Send new  job for same id", () -> given()
                 .spec(loginRequestSpec)
                 .body(userPatch)
                 .when()
@@ -161,9 +169,9 @@ public class ReqResDataTests extends TestBase {
                 .then()
                 .spec(responseSpec200)
                 .extract()
-                .as(PostUserDTO.class);
-
-        Assertions.assertEquals(userPatch.getJob(), responseUser.getJob());
+                .as(PostUserDTO.class));
+        step("Verify that job is changed", () ->
+                Assertions.assertEquals(userPatch.getJob(), responseUser.getJob()));
     }
 
     @Test
@@ -175,20 +183,20 @@ public class ReqResDataTests extends TestBase {
         user.setJob("programmer");
         user.setId(2);
 
-        given()
+        step("Create user with name, job and id", () -> given()
                 .spec(loginRequestSpec)
                 .body(user)
                 .when()
                 .post("users")
                 .then()
-                .spec(responseSpec201);
+                .spec(responseSpec201));
 
-        given()
+        step("Delete user with name, job and id", () -> given()
                 .spec(loginRequestSpec) //loginRequestSpec
                 .when()
                 .delete("users/2")
                 .then()
-                .spec(responseSpec204);
+                .spec(responseSpec204));
 
     }
 }
