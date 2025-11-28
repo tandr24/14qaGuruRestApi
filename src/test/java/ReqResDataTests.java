@@ -1,22 +1,27 @@
-import io.restassured.http.ContentType;
+import DTO.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.is;
+import static spec.RegisterSpec.*;
 
 public class ReqResDataTests extends TestBase {
 
     @Test
     @DisplayName("Verify that total value after get request equals 12")
     void verifyTotalTest() {
-        given()
+        UsersSummaryDTO response = new UsersSummaryDTO();
+        response = given()
+                .spec(loginRequestSpec)
                 .when()
                 .get("users")
                 .then()
-                .log().all()
-                .body("total", is(12));
+                .spec(responseSpec200)
+                .extract()
+                .as(UsersSummaryDTO.class);
+
+        Assertions.assertEquals(12, response.getTotal());
     }
 
     @Test
@@ -27,14 +32,12 @@ public class ReqResDataTests extends TestBase {
         user.setJob("programmer");
 
         PostUserDTO responseUser = given()
-                .log().all()
-                .contentType(ContentType.JSON)
+                .spec(loginRequestSpec)
                 .body(user)
                 .when()
                 .post("users")
                 .then()
-                .log().all()
-                .statusCode(201)
+                .spec(responseSpec201)
                 .extract()
                 .as(PostUserDTO.class);
 
@@ -48,15 +51,16 @@ public class ReqResDataTests extends TestBase {
         LoginDTO loginUser = new LoginDTO();
         loginUser.setEmail("peter@klaven");
 
-        given()
-                .log().all()
-                .contentType(ContentType.JSON)
+        ErrorDTO response = given()
+                .spec(loginRequestSpec)
                 .body(loginUser)
                 .when()
                 .post("login")
                 .then()
-                .log().all()
-                .body("error", is("Missing password"));
+                .spec(responseSpec400)
+                .extract()
+                .as(ErrorDTO.class);
+        Assertions.assertEquals("Missing password", response.getError());
     }
 
     @Test
@@ -66,27 +70,28 @@ public class ReqResDataTests extends TestBase {
         loginUser.setEmail("eve.holt@reqres.in");
         loginUser.setPassword("cityslicka");
 
-        given()
-                .log().all()
-                .contentType(ContentType.JSON)
+        TokenDTO tokenDTO = given()
+                .spec(loginRequestSpec)
                 .body(loginUser)
                 .when()
                 .post("login")
                 .then()
-                .log().all()
-                .body("token", is("QpwL5tke4Pnpja7X4"));
+                .spec(responseSpec200)
+                .extract()
+                .as(TokenDTO.class);
+
+        Assertions.assertEquals("QpwL5tke4Pnpja7X4", tokenDTO.getToken());
     }
 
     @Test
     @DisplayName("Verification status code for user, which doesn't exist")
     void verifyStatusCodeForNonExistedUserTest() {
         given()
-                .log().all()
+                .spec(loginRequestSpec)
                 .when()
                 .get("user/23")
                 .then()
-                .log().all()
-                .statusCode(404);
+                .spec(responseSpec404);
     }
 
     @Test
@@ -98,14 +103,12 @@ public class ReqResDataTests extends TestBase {
         user.setId(2);
 
         PostUserDTO responseUserPost = given()
-                .log().all()
-                .contentType(ContentType.JSON)
+                .spec(loginRequestSpec)
                 .body(user)
                 .when()
                 .post("users")
                 .then()
-                .log().all()
-                .statusCode(201)
+                .spec(responseSpec201)
                 .extract()
                 .as(PostUserDTO.class);
 
@@ -113,15 +116,13 @@ public class ReqResDataTests extends TestBase {
         userPut.setName("Egor");
         userPut.setJob("tester");
 
-        PostUserDTO responseUserPut =  given()
-                .log().all()
-                .contentType(ContentType.JSON)
+        PostUserDTO responseUserPut = given()
+                .spec(loginRequestSpec)
                 .body(userPut)
                 .when()
                 .put("users/2")
                 .then()
-                .log().all()
-                .statusCode(200)
+                .spec(responseSpec200)
                 .extract()
                 .as(PostUserDTO.class);
 
@@ -140,29 +141,25 @@ public class ReqResDataTests extends TestBase {
         user.setId(2);
 
         PostUserDTO responseUserPost = given()
-                .log().all()
-                .contentType(ContentType.JSON)
+                .spec(loginRequestSpec)
                 .body(user)
                 .when()
                 .post("users")
                 .then()
-                .log().all()
-                .statusCode(201)
+                .spec(responseSpec201)
                 .extract()
                 .as(PostUserDTO.class);
 
         PostUserDTO userPatch = new PostUserDTO();
         userPatch.setJob("tester");
 
-        PostUserDTO responseUser =  given()
-                .log().all()
-                .contentType(ContentType.JSON)
+        PostUserDTO responseUser = given()
+                .spec(loginRequestSpec)
                 .body(userPatch)
                 .when()
                 .patch("users/2")
                 .then()
-                .log().all()
-                .statusCode(200)
+                .spec(responseSpec200)
                 .extract()
                 .as(PostUserDTO.class);
 
@@ -179,22 +176,19 @@ public class ReqResDataTests extends TestBase {
         user.setId(2);
 
         given()
-                .log().all()
-                .contentType(ContentType.JSON)
+                .spec(loginRequestSpec)
                 .body(user)
                 .when()
                 .post("users")
                 .then()
-                .log().all()
-                .statusCode(201);
+                .spec(responseSpec201);
 
         given()
-                .log().all()
+                .spec(loginRequestSpec) //loginRequestSpec
                 .when()
                 .delete("users/2")
                 .then()
-                .log().all()
-                .statusCode(204);
+                .spec(responseSpec204);
 
     }
 }
