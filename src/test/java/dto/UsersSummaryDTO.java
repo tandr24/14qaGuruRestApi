@@ -1,12 +1,11 @@
-package DTO;
-
+package dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class LoginDTO {
-    private String email;
-    private String password;
-
+public class UsersSummaryDTO {
+    private Integer page;
+    private Integer per_page;
+    private Integer total;
 }

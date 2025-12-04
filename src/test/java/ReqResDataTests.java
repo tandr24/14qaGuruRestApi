@@ -1,4 +1,4 @@
-import DTO.*;
+import dto.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ public class ReqResDataTests extends TestBase {
                 .when()
                 .get("users")
                 .then()
-                .spec(responseSpec200)
+                .spec(responseSpec(200))
                 .extract()
                 .as(UsersSummaryDTO.class));
 
@@ -38,7 +38,7 @@ public class ReqResDataTests extends TestBase {
                 .when()
                 .post("users")
                 .then()
-                .spec(responseSpec201)
+                .spec(responseSpec(201))
                 .extract()
                 .as(PostUserDTO.class));
 
@@ -60,7 +60,7 @@ public class ReqResDataTests extends TestBase {
                 .when()
                 .post("login")
                 .then()
-                .spec(responseSpec400)
+                .spec(responseSpec(400))
                 .extract()
                 .as(ErrorDTO.class));
         step("Verify error text", () ->
@@ -80,7 +80,7 @@ public class ReqResDataTests extends TestBase {
                 .when()
                 .post("login")
                 .then()
-                .spec(responseSpec200)
+                .spec(responseSpec(200))
                 .extract()
                 .as(TokenDTO.class));
 
@@ -96,7 +96,7 @@ public class ReqResDataTests extends TestBase {
                 .when()
                 .get("user/23")
                 .then()
-                .spec(responseSpec404));
+                .spec(responseSpec(404)));
     }
 
     @Test
@@ -113,7 +113,7 @@ public class ReqResDataTests extends TestBase {
                 .when()
                 .post("users")
                 .then()
-                .spec(responseSpec201)
+                .spec(responseSpec(201))
                 .extract()
                 .as(PostUserDTO.class));
 
@@ -128,7 +128,7 @@ public class ReqResDataTests extends TestBase {
                         .when()
                         .put("users/2")
                         .then()
-                        .spec(responseSpec200)
+                        .spec(responseSpec(200))
                         .extract()
                         .as(PostUserDTO.class));
 
@@ -154,7 +154,7 @@ public class ReqResDataTests extends TestBase {
                 .when()
                 .post("users")
                 .then()
-                .spec(responseSpec201)
+                .spec(responseSpec(201))
                 .extract()
                 .as(PostUserDTO.class));
 
@@ -167,7 +167,7 @@ public class ReqResDataTests extends TestBase {
                 .when()
                 .patch("users/2")
                 .then()
-                .spec(responseSpec200)
+                .spec(responseSpec(200))
                 .extract()
                 .as(PostUserDTO.class));
         step("Verify that job is changed", () ->
@@ -189,14 +189,14 @@ public class ReqResDataTests extends TestBase {
                 .when()
                 .post("users")
                 .then()
-                .spec(responseSpec201));
+                .spec(responseSpec(201)));
 
         step("Delete user with name, job and id", () -> given()
                 .spec(loginRequestSpec) //loginRequestSpec
                 .when()
                 .delete("users/2")
                 .then()
-                .spec(responseSpec204));
+                .spec(responseSpec(204)));
 
     }
 }

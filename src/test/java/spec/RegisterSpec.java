@@ -12,29 +12,13 @@ import static io.restassured.http.ContentType.JSON;
 
 public class RegisterSpec {
 
-    public static ResponseSpecification responseSpec200 = new ResponseSpecBuilder()
-            .expectStatusCode(200)
-            .log(LogDetail.ALL)
-            .build();
-    public static ResponseSpecification responseSpec201 = new ResponseSpecBuilder()
-            .expectStatusCode(201)
-            .log(LogDetail.ALL)
-            .build();
+    public static ResponseSpecification responseSpec (int status)  {
+        return new ResponseSpecBuilder()
+                .expectStatusCode(status)
+                .log(LogDetail.ALL)
+                .build();
+    }
 
-    public static ResponseSpecification responseSpec204 = new ResponseSpecBuilder()
-            .expectStatusCode(204)
-            .log(LogDetail.ALL)
-            .build();
-
-    public static ResponseSpecification responseSpec400 = new ResponseSpecBuilder()
-            .expectStatusCode(400)
-            .log(LogDetail.ALL)
-            .build();
-
-    public static ResponseSpecification responseSpec404 = new ResponseSpecBuilder()
-            .expectStatusCode(404)
-            .log(LogDetail.ALL)
-            .build();
 
     public static RequestSpecification loginRequestSpec = with()
             .filter(withCustomTemplates())
