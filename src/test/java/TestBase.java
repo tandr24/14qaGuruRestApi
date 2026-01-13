@@ -1,5 +1,4 @@
 import io.restassured.RestAssured;
-import io.restassured.builder.RequestSpecBuilder;
 import org.junit.jupiter.api.BeforeAll;
 
 public class TestBase {

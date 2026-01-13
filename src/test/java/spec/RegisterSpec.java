@@ -21,7 +21,7 @@ public class RegisterSpec {
 
     public static RequestSpecification loginRequestSpec = with()
             .filter(withCustomTemplates())
-            .header("x-api-key", "reqres_126952deafae428fa8e4934879ab8dfc")
+            .header("x-api-key", System.getProperty("accessKey"))
             .log().all()
             .contentType(JSON);
 }
