@@ -2,7 +2,6 @@ package spec;
 
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.filter.log.LogDetail;
-import io.restassured.http.ContentType;
 import static io.restassured.RestAssured.with;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
@@ -22,7 +21,7 @@ public class RegisterSpec {
 
     public static RequestSpecification loginRequestSpec = with()
             .filter(withCustomTemplates())
-            .header("x-api-key", "reqres-free-v1")
+            .header("x-api-key", "reqres_126952deafae428fa8e4934879ab8dfc")
             .log().all()
             .contentType(JSON);
 }
