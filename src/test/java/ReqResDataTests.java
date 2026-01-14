@@ -5,12 +5,13 @@ import org.junit.jupiter.api.Test;
 
 public class ReqResDataTests extends TestBase {
     @Test
-    @DisplayName("Verify that total value after get request equals 12")
+    @DisplayName("Verify that total value after get request equals expectedTotalResult")
     void verifyTotalTest() {
         ReqResApi reqResApi = new ReqResApi();
+        int expectedTotalResult = 12;
 
         UsersSummaryDTO response = reqResApi.getAllUsers();
-        reqResApi.verifyFieldTotalAsExpected(12, response);
+        reqResApi.verifyFieldTotalAsExpected(expectedTotalResult, response);
     }
 
     @Test
