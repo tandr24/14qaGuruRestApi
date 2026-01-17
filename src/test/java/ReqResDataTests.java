@@ -41,7 +41,7 @@ public class ReqResDataTests extends TestBase {
     }
 
     @Test
-    @DisplayName("Successful login returns token")
+    @DisplayName("Successful login returns token and it is not NULL")
     void verifySuccessfulLoginTest() {
         LoginDTO loginUser = new LoginDTO();
         loginUser.setEmail("eve.holt@reqres.in");
@@ -51,6 +51,7 @@ public class ReqResDataTests extends TestBase {
 
         TokenDTO tokenDTO = reqResApi.LoginWithCredentials(loginUser);
         reqResApi.verifyToken("QpwL5tke4Pnpja7X4", tokenDTO);
+        reqResApi.verifyTokenIsNotNull(tokenDTO);
     }
 
     @Test

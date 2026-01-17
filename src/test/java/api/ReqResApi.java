@@ -1,6 +1,7 @@
 package api;
 
 import dto.*;
+import org.apache.commons.lang3.ObjectUtils;
 import org.junit.jupiter.api.Assertions;
 
 import static io.qameta.allure.Allure.step;
@@ -79,6 +80,15 @@ public class ReqResApi {
     public void verifyToken(String expectedToken, TokenDTO tokenDTO) {
         step("Verify token is correct", () ->
                 Assertions.assertEquals(expectedToken, tokenDTO.getToken()));
+    }
+
+    public void verifyTokenIsNotNull(TokenDTO tokenDTO) {
+        step("Verify token is not NULL", () ->
+        {
+            Assertions.assertNotNull(tokenDTO);
+            Assertions.assertNotNull(tokenDTO.getToken());
+        });
+
     }
 
     public void createUserWithNameJobId(PostUserDTO user) {
