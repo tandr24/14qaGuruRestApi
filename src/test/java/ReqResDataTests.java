@@ -51,7 +51,7 @@ public class ReqResDataTests extends TestBase {
 
         TokenDTO tokenDTO = reqResApi.LoginWithCredentials(loginUser);
         reqResApi.verifyToken("QpwL5tke4Pnpja7X4", tokenDTO);
-        reqResApi.verifyTokenIsNotNull(tokenDTO);
+        reqResApi.verifyTokenIsNotNullAndAlphanumeric(tokenDTO);
     }
 
     @Test

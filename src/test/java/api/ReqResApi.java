@@ -82,11 +82,12 @@ public class ReqResApi {
                 Assertions.assertEquals(expectedToken, tokenDTO.getToken()));
     }
 
-    public void verifyTokenIsNotNull(TokenDTO tokenDTO) {
-        step("Verify token is not NULL", () ->
+    public void verifyTokenIsNotNullAndAlphanumeric(TokenDTO tokenDTO) {
+        step("Verify token is not NULL and it is alphanumeric", () ->
         {
             Assertions.assertNotNull(tokenDTO);
             Assertions.assertNotNull(tokenDTO.getToken());
+            Assertions.assertTrue(tokenDTO.getToken().matches("[A-Za-z0-9]+"));
         });
 
     }
